@@ -98,7 +98,7 @@ public class GUI {
 		
 		frame = createFrame("Hollow Knight - Save Manager");
 		
-		frame.setLayout(new GridBagLayout());
+		frame.setLayout(new BorderLayout());
 		
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.BOTH;
@@ -233,22 +233,31 @@ public class GUI {
 				refreshFileTree(savePath);
 			}
 		});
-		directoryButtons.add(backupToggle);
-		directoryButtons.add(setSaveLocation);
-		directoryButtons.add(addDirectory);
-		directoryButtons.add(addSavefile);
-		directoryButtons.add(dirOrSaveName);
+		
+		directoryButtons.setLayout(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.weightx = 1;gbc.weighty=1;
+		gbc.gridx = 0;gbc.gridy=0;
+		directoryButtons.add(backupToggle, gbc);
+		gbc.gridx = 1;
+		directoryButtons.add(setSaveLocation, gbc);
+		gbc.gridx = 2;
+		directoryButtons.add(addDirectory, gbc);
+		gbc.gridx = 3;
+		directoryButtons.add(addSavefile, gbc);
+		gbc.gridx = 0;gbc.gridy=1;gbc.gridwidth=4;
+		directoryButtons.add(dirOrSaveName, gbc);
 		
 		directoryExplorer.add(directoryButtons, c);
 		
-		c.gridy = 0;
-		c.ipadx = 500;
-		frame.add(saveContainer, c);		
-		c.ipadx = 200;
-		c.weightx = 1;c.weighty = 1;
-		c.gridx = 1;
-		c.gridy = 0;
-		frame.add(directoryExplorer,c );
+		//c.gridy = 0;
+		//c.ipadx = 500;
+		frame.add(saveContainer, BorderLayout.LINE_START);		
+		//c.ipadx = 200;
+		//c.weightx = 1;c.weighty = 1;
+		//c.gridx = 1;
+		//c.gridy = 0;
+		frame.add(directoryExplorer, BorderLayout.CENTER);
 		
 		frame.pack();
 		frame.setLocationRelativeTo(null);

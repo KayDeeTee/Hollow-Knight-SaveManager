@@ -2,6 +2,7 @@ package HKSM;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -36,6 +37,7 @@ import com.google.gson.JsonObject;
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 
+//SavePanel is the panel that contain the 4 loaded saves data, and the buttons to interact with them
 public class SavePanel extends JPanel{
 	public JPanel panel;
 	public JLabel filename;
@@ -160,9 +162,9 @@ public class SavePanel extends JPanel{
 		
 		filename.setHorizontalAlignment(SwingConstants.CENTER);
 
-		this.add(filename);
-		this.add(loadAll);
-		this.add(delete);	
+		this.add(filename, BorderLayout.PAGE_START);
+		this.add(loadAll, BorderLayout.LINE_START);
+		this.add(delete, BorderLayout.LINE_END);
 	}
 	
 	public SavePanel(GUI _gui, String fileName){

@@ -157,6 +157,7 @@ public class SaveLoader {
 	    decipher.init(Cipher.ENCRYPT_MODE, sKey);
 	    final byte[] enc = decipher.doFinal(message);
 	    
+	    
 	    message = Base64.getMimeEncoder().encode(enc);
 	
 	    return message;
@@ -171,12 +172,12 @@ public class SaveLoader {
 	    String str = new String(tmp);
 	    
 	    message = Base64.getMimeDecoder().decode(str);
-	
+	    
 	    SecretKeySpec sKey = new SecretKeySpec("UKu52ePUBwetZ9wNX88o54dnfKRu0T1l".getBytes("UTF-8"), "Rijndael");
 	    final Cipher decipher = Cipher.getInstance("Rijndael/ECB/PKCS5Padding");
 	    decipher.init(Cipher.DECRYPT_MODE, sKey);
 	    final byte[] plainText = decipher.doFinal(message);
-	
+	    
 	    return new String(plainText, "UTF-8");
 	}
 	
