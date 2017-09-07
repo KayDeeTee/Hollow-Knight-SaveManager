@@ -10,12 +10,20 @@ import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import com.google.gson.*;
+
+import gnu.crypto.cipher.IBlockCipher;
+import gnu.crypto.mode.IMode;
+import gnu.crypto.mode.ModeFactory;
+import gnu.crypto.pad.IPad;
+import gnu.crypto.pad.PadFactory;
 
 public class SaveLoader {
 	
@@ -148,6 +156,77 @@ public class SaveLoader {
 		BEASTS_DEN
 	}
 	
+	public static byte[] encGNU(String input) throws Exception {
+		byte[] message = input.getBytes("UTF-8");
+		
+		IMode mode = ModeFactory.getInstance("ECB", "Rijndael", 16);
+		
+		Map attributes = new HashMap();		
+	    attributes.put(IMode.KEY_MATERIAL, "UKu52ePUBwetZ9wNX88o54dnfKRu0T1l".getBytes("UTF-8"));
+	    attributes.put(IMode.CIPHER_BLOCK_SIZE, new Integer(16));
+	    attributes.put(IMode.STATE, new Integer(IMode.ENCRYPTION));
+	    
+	    mode.init(attributes);
+	    
+	    int bs = mode.currentBlockSize();
+	    
+	    IPad padding = PadFactory.getInstance("PKCS7");
+	    padding.init(bs);
+	    byte[] pad = padding.pad(message, 0, message.length);
+	    byte[] pt = new byte[message.length + pad.length];
+	    byte[] ct = new byte[pt.length];
+
+	    System.arraycopy(message, 0, pt, 0, message.length);
+	    System.arraycopy(pad, 0, pt, message.length, pad.length);
+	     
+	     for (int i = 0; i + bs <= pt.length; i += bs)
+	        {
+	           mode.update(pt, i, ct, i);
+	        }
+	     
+		return Base64.getMimeEncoder().encode(ct);
+	}
+	
+	public static byte[] decGNU(String input) throws Exception {
+		byte[] message = input.getBytes();
+	    byte[] tmp = Arrays.copyOfRange(message, 0, message.length-1);
+	    String str = new String(tmp);
+	    message = Base64.getMimeDecoder().decode(str);
+		
+		IMode mode = ModeFactory.getInstance("ECB", "Rijndael", 16);
+		
+		Map attributes = new HashMap();		
+	    attributes.put(IMode.KEY_MATERIAL, "UKu52ePUBwetZ9wNX88o54dnfKRu0T1l".getBytes("UTF-8"));
+	    attributes.put(IMode.CIPHER_BLOCK_SIZE, new Integer(16));
+	    attributes.put(IMode.STATE, new Integer(IMode.DECRYPTION));
+	    
+	    mode.init(attributes);
+	    
+	    int bs = mode.currentBlockSize();
+	    
+	    IPad padding = PadFactory.getInstance("PKCS7");
+	    padding.init(bs);
+	    
+	    byte[] pad = padding.pad(message, 0, message.length);
+	    byte[] ct = new byte[message.length+pad.length];
+	    byte[] cpt = new byte[message.length];
+	    
+	    System.arraycopy(message, 0, ct, 0, message.length);
+	    System.arraycopy(pad, 0, ct, message.length, pad.length);
+	     
+	     for (int i = 0; i + bs < ct.length; i += bs)
+	        {
+	           mode.update(ct, i, cpt, i);
+	        }
+	     
+	     int unpad = padding.unpad(cpt, 0, cpt.length);
+	     byte[] output = new byte[cpt.length - unpad];
+	     System.arraycopy(cpt, 0, output, 0, output.length);
+	    
+		return output;
+	}
+	
+	
 	public static byte[] encrypt(String input) throws Exception {
 		
 	    byte[] message = input.getBytes("UTF-8");
@@ -218,16 +297,16 @@ public class SaveLoader {
 	public static byte[] getLength(byte[] input){
 		String rawLengthBinary =  Integer.toBinaryString(input.length);
 		String reverse = new StringBuffer(rawLengthBinary).reverse().toString();
-		System.out.println(reverse.length());
+		//System.out.println(reverse.length());
 		String[] data = new String[(int) Math.ceil( ((double)reverse.length()) / 7.0f)];
-		System.out.println(data.length);
+		//System.out.println(data.length);
 		for( int i = 0; i < data.length-1; i++){
 			data[i] = reverse.subSequence(i*7, ((i+1)*7)).toString()+"1";
 		}
 		data[data.length-1] = reverse.subSequence((data.length-1)*7, reverse.length()).toString();
 		byte[] output = new byte[data.length];
 		for( int i = 0; i < data.length; i++){
-			System.out.println(data[i]);
+			//System.out.println(data[i]);
 			output[i] = (byte) Long.parseLong( new StringBuffer(data[i]).reverse().toString(), 2);
 		}
 		return output;
@@ -239,9 +318,10 @@ public class SaveLoader {
 		Gson gson = new GsonBuilder().create();
 		String jsonString = gson.toJson(json);//.replaceAll("\\s","");
 		jsonString = jsonString.substring(0, jsonString.length()-2)+"}}";
-		System.out.println(jsonString);
+		//System.out.println(jsonString);
 		try {
-			byte[] toSave = encrypt(jsonString);
+			//byte[] toSave = encrypt(jsonString);
+			byte[] toSave = encGNU(jsonString);
 			int count = 0;
 			for( int i = 0; i< toSave.length; i++){
 				if(!(toSave[i] == 0x0D || toSave[i] == 0x0A))
@@ -276,7 +356,9 @@ public class SaveLoader {
 	
 	public static JsonObject loadSave(File dir) throws Exception {
 		String str = new String(Files.readAllBytes(dir.toPath()),"UTF-8");
-		String json = new String(decrypt(str));
+		//String json = new String(decrypt(str));
+		String json = new String(decGNU(str), "UTF-8");
+		//System.out.println(json);
 		JsonObject jElement = new Gson().fromJson(json, JsonObject.class);
 		return jElement;
 	}

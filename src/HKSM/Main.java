@@ -48,7 +48,7 @@ public class Main {
 		Security.setProperty("crypto.policy", "unlimited");
 		Properties appProps = loadProperties("appProperties");
 		
-		System.out.println(Cipher.getMaxAllowedKeyLength( "Rijndael" ));
+		/*System.out.println(Cipher.getMaxAllowedKeyLength( "Rijndael" ));
 		String sec = System.getProperty("java.home")+"/lib/security/";
 
 		if( Cipher.getMaxAllowedKeyLength( "Rijndael" ) < 2147483647){
@@ -87,7 +87,7 @@ public class Main {
 			fJava.setAlwaysOnTop (true);
 			fJava.pack();
 			fJava.setVisible(true);
-		}
+		}*/
 		
 		GUI gui = new GUI(appProps);
 	}
