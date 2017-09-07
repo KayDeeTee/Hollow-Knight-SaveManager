@@ -11,7 +11,7 @@ Double clicking a save in the file tree opens a save editor if you have jce unli
 
 ## Releases
 
-  * [Latest](https://github.com/KayDeeTee/Hollow-Knight-SaveManger/releases)
+  * [Latest](https://github.com/KayDeeTee/Hollow-Knight-SaveManger/releases/latest)
 
 ## Licenses
 
