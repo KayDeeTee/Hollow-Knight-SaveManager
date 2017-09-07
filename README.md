@@ -1,6 +1,10 @@
 # Hollow-Knight-SaveManger
 Manage and edit Hollow Knight saves
 
+## Releases
+
+  * [Latest](https://github.com/KayDeeTee/Hollow-Knight-SaveManger/releases)
+
 ## Licenses
 
   * [Hollow-Knight-SaveManger](https://github.com/KayDeeTee/Hollow-Knight-SaveManger/blob/master/LICENSE)
