@@ -7,7 +7,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import HKSM.GUI;
+import HKSM.app.GUI;
 
 @SuppressWarnings("serial")
 public class LoadDelete extends JPanel{
