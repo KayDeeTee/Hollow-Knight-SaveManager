@@ -9,9 +9,6 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
-
 import com.google.gson.*;
 
 import gnu.crypto.mode.IMode;
@@ -156,6 +153,13 @@ public class SaveLoader {
 		// Token: 0x04002E84 RID: 11908
 		BEASTS_DEN
 	}
+	
+	private static final String CIPHER_MODE = "ECB";
+	private static final String CIPHER_ALGO = "Rijndael";
+	private static final String CIPHER_PAD  = "PKCS7";
+	private static final byte[] RIJNDAEL_KEY = "UKu52ePUBwetZ9wNX88o54dnfKRu0T1l".getBytes();
+	private static final int BLOCK_SIZE = 16;
+	
 	/**
 	 * Encrypts a string via Rijndael/ECB/RKCS7 with the key UKu52ePUBwetZ9wNX88o54dnfKRu0T1l then encodes in base 64
 	 * This uses GNU libraries to bypass the JCE requirement
@@ -163,20 +167,20 @@ public class SaveLoader {
 	 * @param input the string representing the json, to be encrypted
 	 */
 	public static byte[] encrypt(String input) throws Exception {
-		byte[] message = input.getBytes("UTF-8");
+		byte[] message = input.getBytes();
 		
-		IMode mode = ModeFactory.getInstance("ECB", "Rijndael", 16);
+		IMode mode = ModeFactory.getInstance(CIPHER_MODE, CIPHER_ALGO, BLOCK_SIZE);
 		
-		Map attributes = new HashMap();		
-	    attributes.put(IMode.KEY_MATERIAL, "UKu52ePUBwetZ9wNX88o54dnfKRu0T1l".getBytes("UTF-8"));
-	    attributes.put(IMode.CIPHER_BLOCK_SIZE, new Integer(16));
-	    attributes.put(IMode.STATE, new Integer(IMode.ENCRYPTION));
+		Map<String, Object> attributes = new HashMap<String, Object>();		
+	    attributes.put(IMode.KEY_MATERIAL, RIJNDAEL_KEY);
+	    attributes.put(IMode.CIPHER_BLOCK_SIZE, BLOCK_SIZE);
+	    attributes.put(IMode.STATE, IMode.ENCRYPTION);
 	    
 	    mode.init(attributes);
 	    
 	    int bs = mode.currentBlockSize();
 	    
-	    IPad padding = PadFactory.getInstance("PKCS7");
+	    IPad padding = PadFactory.getInstance(CIPHER_PAD);
 	    padding.init(bs);
 	    byte[] pad = padding.pad(message, 0, message.length);
 	    byte[] pt = new byte[message.length + pad.length];
@@ -204,18 +208,18 @@ public class SaveLoader {
 	    String str = new String(tmp);
 	    message = Base64.getMimeDecoder().decode(str);
 		
-		IMode mode = ModeFactory.getInstance("ECB", "Rijndael", 16);
+		IMode mode = ModeFactory.getInstance(CIPHER_MODE, CIPHER_ALGO, BLOCK_SIZE);
 		
-		Map attributes = new HashMap();		
-	    attributes.put(IMode.KEY_MATERIAL, "UKu52ePUBwetZ9wNX88o54dnfKRu0T1l".getBytes("UTF-8"));
-	    attributes.put(IMode.CIPHER_BLOCK_SIZE, new Integer(16));
-	    attributes.put(IMode.STATE, new Integer(IMode.DECRYPTION));
+		Map<String, Object> attributes = new HashMap<String, Object>();			
+	    attributes.put(IMode.KEY_MATERIAL, RIJNDAEL_KEY);
+	    attributes.put(IMode.CIPHER_BLOCK_SIZE, BLOCK_SIZE);
+	    attributes.put(IMode.STATE, IMode.DECRYPTION);
 	    
 	    mode.init(attributes);
 	    
 	    int bs = mode.currentBlockSize();
 	    
-	    IPad padding = PadFactory.getInstance("PKCS7");
+	    IPad padding = PadFactory.getInstance(CIPHER_PAD);
 	    padding.init(bs);
 	    
 	    byte[] pad = padding.pad(message, 0, message.length);

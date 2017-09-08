@@ -1,18 +1,11 @@
 package HKSM;
 
-import java.awt.Desktop;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URI;
 import java.security.Security;
 import java.util.Properties;
-
-import javax.crypto.Cipher;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
 
 /**
  * The launcher for HKSM. Main deals with platform- and version-dependent properties
