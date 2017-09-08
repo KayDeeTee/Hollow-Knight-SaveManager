@@ -1,31 +1,21 @@
 package HKSM;
 
 import java.awt.BorderLayout;
-//import java.awt.Color;
-//import java.awt.Container;
-//import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-//import java.io.FileFilter;
-//import java.io.FilenameFilter;
-//import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Vector;
 
-//import javax.swing.BoxLayout;
-//import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-//import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-//import javax.swing.tree.TreePath;
 
 /**
  * Display a file system in a JTree view
