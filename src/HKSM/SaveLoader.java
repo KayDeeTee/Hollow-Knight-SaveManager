@@ -14,7 +14,6 @@ import javax.crypto.spec.SecretKeySpec;
 
 import com.google.gson.*;
 
-<<<<<<< HEAD
 import gnu.crypto.mode.IMode;
 import gnu.crypto.mode.ModeFactory;
 import gnu.crypto.pad.IPad;
@@ -25,13 +24,7 @@ import gnu.crypto.pad.PadFactory;
  * 
  * @author Kristian Thorpe <sfgmugen@gmail.com>
 =======
-/**
- * 
- * 
- * @author Ian Darwin
->>>>>>> origin/master
- *
- */
+
 public class SaveLoader {
 	
 	public static byte[] cSharpHeader = {
