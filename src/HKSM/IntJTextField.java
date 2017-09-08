@@ -5,6 +5,13 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.JTextField;
 
+/**
+ * A simple wrapper for a JTextField which only accepts numerical input.
+ * 
+ * @author Ian Darwin
+ *
+ */
+@SuppressWarnings("serial")
 public class IntJTextField extends JTextField {
 
 	    public IntJTextField(int def){
@@ -13,15 +20,11 @@ public class IntJTextField extends JTextField {
 	            public void keyTyped(KeyEvent e) {
 	                char ch = e.getKeyChar();
 
-	                if (!isNumber(ch) && ch != '\b') {
+	                if (!Character.isDigit(ch) && ch != '\b') {
 	                    e.consume();
 	                }
 	            }
 	        });
 
-	    }
-
-	    private boolean isNumber(char ch){
-	        return ch >= '0' && ch <= '9';
 	    }
 }

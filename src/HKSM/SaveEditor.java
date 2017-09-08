@@ -18,16 +18,90 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+/**
+ * 
+ * @author Ian Darwin
+ *
+ */
+@SuppressWarnings("serial")
 public class SaveEditor extends JFrame {
+	
+	/**
+	 * Simple DocumentListener class to improve code readability. All 
+	 * document events trigger a change to the property's value through check()
+	 * 
+	 * @author J Conrad
+	 *
+	 */
+	private class DocChecker implements DocumentListener{
+		
+		JsonObject playerData;
+		String propertyName;
+		IntJTextField target;
+		
+		public DocChecker(JsonObject playerData, String propertyName, IntJTextField target){
+			this.playerData = playerData;
+			this.propertyName = propertyName;
+			this.target = target;
+		}
+		
+		@Override
+		public void changedUpdate(DocumentEvent e) {
+		    check();
+		}
+		
+		@Override
+		public void removeUpdate(DocumentEvent e) {
+			check();
+		}
+		
+		@Override
+		public void insertUpdate(DocumentEvent e) {
+		    check();
+		}
+		
+		public void check(){
+			playerData.addProperty(propertyName, target.getText());
+		}
+	}
+	
+	/**
+	 * Simple ActionListener class to improve code readability. All actions
+	 * trigger the member's boolean value to switch.
+	 * 
+	 * @author J Conrad
+	 *
+	 */
+	private class CharmButtonListener implements ActionListener{
+		
+		JButton target;
+		JsonObject playerData;
+		String memberName;
+		String ifTrue;
+		String ifFalse;
+		
+		public CharmButtonListener(JButton target, JsonObject playerData, String memberName, String ifTrue, String ifFalse){
+			this.target = target;
+			this.playerData = playerData;
+			this.memberName = memberName;
+			this.ifTrue = ifTrue;
+			this.ifFalse = ifFalse;
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			boolean bool = playerData.get(memberName).getAsBoolean();
+			playerData.addProperty(memberName, !bool);
+			target.setText(!bool ? ifTrue : ifFalse);
+		}
+	}
 	
 	public JsonObject json;
 	public File fObject;
@@ -49,7 +123,7 @@ public class SaveEditor extends JFrame {
 		playerData.add("equppedCharms", charms);
 	}
 	
-	public static String[] charmNames = new String[]{
+	private static String[] charmNames = new String[]{
 			"Gathering Swarm",
 			"Wayward Compass",
 			"Grubsong",
@@ -91,12 +165,10 @@ public class SaveEditor extends JFrame {
 	public SaveEditor(String path, String title){
 		
 		fObject = new File(path);
-		SaveLoader sl = new SaveLoader();
 		
 		try {
-			json = sl.loadSave(fObject);
+			json = SaveLoader.loadSave(fObject);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -117,12 +189,12 @@ public class SaveEditor extends JFrame {
 			
 		fileSave.addActionListener( new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				sl.saveSave(fObject, json);
+				SaveLoader.saveSave(fObject, json);
 			}
 		});
 			
 		JPanel inventoryEditor = new JPanel();
-		JScrollPane inventoryScroll = new JScrollPane();
+//		JScrollPane inventoryScroll = new JScrollPane(); // not yet implemented
 		tab.addTab("Inventory", inventoryEditor);
 		
 		inventoryEditor.setLayout(new GridLayout(0,3));
@@ -173,37 +245,9 @@ public class SaveEditor extends JFrame {
 		IntJTextField eNotch = new IntJTextField(usedNotches);
 		IntJTextField mNotch = new IntJTextField(totalNotches);
 		
-		eNotch.getDocument().addDocumentListener(new DocumentListener() {
-			  public void changedUpdate(DocumentEvent e) {
-			    check();
-			  }
-			  public void removeUpdate(DocumentEvent e) {
-			    check();
-			  }
-			  public void insertUpdate(DocumentEvent e) {
-			    check();
-			  }
-			  
-			  public void check(){
-				  playerData.addProperty("charmSlotsFilled", eNotch.getText());
-			  }
-		});
-		
-		mNotch.getDocument().addDocumentListener(new DocumentListener() {
-			  public void changedUpdate(DocumentEvent e) {
-			    check();
-			  }
-			  public void removeUpdate(DocumentEvent e) {
-			    check();
-			  }
-			  public void insertUpdate(DocumentEvent e) {
-			    check();
-			  }
-			  
-			  public void check(){
-				  playerData.addProperty("charmSlots", mNotch.getText());
-			  }
-		});
+		// Now uses boxed listeners
+		eNotch.getDocument().addDocumentListener(new DocChecker(playerData, "charmSlotsFilled", eNotch));
+		mNotch.getDocument().addDocumentListener(new DocChecker(playerData, "charmSlots", mNotch));
 		
 		JCheckBox oc = new JCheckBox("Overcharmed");
 		oc.addActionListener( new ActionListener() {
@@ -241,47 +285,19 @@ public class SaveEditor extends JFrame {
 						
 			String s = Integer.toString(i+1);
 			
+			
 			boolean ow = playerData.get("gotCharm_"+s).getAsBoolean();
 			boolean eq = playerData.get("equippedCharm_"+s).getAsBoolean();
 			int co = playerData.get("charmCost_"+s).getAsInt();
 			
-			JButton owned = new JButton(ow ? "OWN" : "!OWN");
+			JButton owned = new JButton(ow ? "OWN" : "UNOWNED");
 			JButton equip = new JButton(eq ? "ON" : "OFF");
 			IntJTextField cost = new IntJTextField(co);
 			
-			owned.addActionListener( new ActionListener(){
-				@Override
-				public void actionPerformed(ActionEvent arg0) {
-					boolean bool = playerData.get("gotCharm_"+s).getAsBoolean();
-					playerData.addProperty("gotCharm_"+s, !bool);
-					owned.setText(!bool ? "OWN" : "UNOWNED");
-				}
-			});
-			
-			equip.addActionListener( new ActionListener(){
-				@Override
-				public void actionPerformed(ActionEvent arg0) {
-					boolean bool = playerData.get("equippedCharm_"+s).getAsBoolean();
-					playerData.addProperty("equippedCharm_"+s, !bool);
-					equip.setText(!bool ? "ON" : "OFF");
-				}
-			});
-			
-			cost.getDocument().addDocumentListener(new DocumentListener() {
-				  public void changedUpdate(DocumentEvent e) {
-				    check();
-				  }
-				  public void removeUpdate(DocumentEvent e) {
-				    check();
-				  }
-				  public void insertUpdate(DocumentEvent e) {
-				    check();
-				  }
-				  
-				  public void check(){
-					  playerData.addProperty("charmCost_"+s, cost.getText());
-				  }
-			});
+			// Now uses boxed listeners
+			owned.addActionListener(new CharmButtonListener(owned, playerData, "gotCharm_" + s, "OWN", "UNOWNED"));
+			equip.addActionListener(new CharmButtonListener(equip, playerData, "equippedCharm_" + s, "ON", "OFF"));
+			cost.getDocument().addDocumentListener(new DocChecker(playerData, "charmCost_" + s, cost));
 			
 			info.add(owned);
 			info.add(equip);
@@ -290,7 +306,6 @@ public class SaveEditor extends JFrame {
 			charm.add(info, BorderLayout.CENTER);
 			charm.add(Box.createRigidArea(new Dimension(0,15)), BorderLayout.PAGE_END);
 			charmBottom.add( charm );
-			
 		}
 		
 		charmTab.add(charmTop, BorderLayout.PAGE_START);

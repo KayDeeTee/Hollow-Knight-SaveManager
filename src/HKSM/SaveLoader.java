@@ -2,21 +2,22 @@ package HKSM;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.Base64;
 
 import javax.crypto.Cipher;
-import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import com.google.gson.*;
 
+/**
+ * 
+ * 
+ * @author Ian Darwin
+ *
+ */
 public class SaveLoader {
 	
 	public static byte[] cSharpHeader = {
@@ -44,6 +45,7 @@ public class SaveLoader {
 			00
 	};
 	
+	/** */
 	public enum MapZone
 	{
 		// Token: 0x04002E53 RID: 11859
@@ -215,7 +217,12 @@ public class SaveLoader {
 		return ret;
 	}
 	
-	public static byte[] getLength(byte[] input){
+	/**
+	 * 
+	 * @param input
+	 * @return
+	 */
+	private static byte[] getLength(byte[] input){
 		String rawLengthBinary =  Integer.toBinaryString(input.length);
 		String reverse = new StringBuffer(rawLengthBinary).reverse().toString();
 		System.out.println(reverse.length());
@@ -233,6 +240,12 @@ public class SaveLoader {
 		return output;
 	}
 	
+	/**
+	 * Encrypts the given json at the requested file
+	 * 
+	 * @param dir the location to encrypt and save the save (lol)
+	 * @param json the save data to be encrypted and written
+	 */
 	public static void saveSave(File dir, JsonObject json){
 		SaveField.validateSaveData(json);
 		SaveEditor.validateCharms(json.getAsJsonObject("playerData"));
@@ -268,12 +281,17 @@ public class SaveLoader {
 			out.write(outArray);
 			out.close();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 	}
 	
+	/**
+	 * 
+	 * @param dir the file to be decrypted into JSON format
+	 * @return the decrypted save data in JSON format
+	 * @throws Exception to capture generic errors
+	 */
 	public static JsonObject loadSave(File dir) throws Exception {
 		String str = new String(Files.readAllBytes(dir.toPath()),"UTF-8");
 		String json = new String(decrypt(str));

@@ -1,8 +1,6 @@
 package HKSM;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -17,11 +15,8 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.text.SimpleDateFormat;
-import java.util.Comparator;
 import java.util.Date;
 
-import javax.swing.BoxLayout;
-import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -31,13 +26,18 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 
+/**
+ * SavePanel is the 
+ * 
+ * @author KDT
+ */
 //SavePanel is the panel that contain the 4 loaded saves data, and the buttons to interact with them
+@SuppressWarnings("serial")
 public class SavePanel extends JPanel{
 	public JPanel panel;
 	public JLabel filename;
@@ -76,7 +76,6 @@ public class SavePanel extends JPanel{
 			    }
 			 });
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}      
 	}
@@ -112,7 +111,6 @@ public class SavePanel extends JPanel{
 							try {
 								Files.copy(src, dst, StandardCopyOption.REPLACE_EXISTING);
 							} catch (IOException e1) {
-								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}
 						}
@@ -131,7 +129,6 @@ public class SavePanel extends JPanel{
 					try {
 						Files.copy(cop, src, StandardCopyOption.REPLACE_EXISTING);
 					} catch (IOException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 				}
@@ -153,7 +150,7 @@ public class SavePanel extends JPanel{
 				for( int i = 1; i < c; i++ ){
 					path += "/" + gui.ft.lastClicked.getPath()[i].toString();
 				}
-				Path cop = new File(path).toPath();
+//				Path cop = new File(path).toPath(); // unused
 				System.out.println(path);
 				deleteFiles(path);
 				gui.ft.model.reload();
@@ -193,7 +190,7 @@ public class SavePanel extends JPanel{
 				if( gui.ft.lastClicked == null )
 					return;
 				String path = gui.savePath;
-				int count = gui.ft.lastClicked.getPath().length;
+//				int count = gui.ft.lastClicked.getPath().length; // unused
 				File f = new File(path+"/hksm-back");
 				if( !f.exists() )
 					f.mkdir();
@@ -224,7 +221,6 @@ public class SavePanel extends JPanel{
 						}
 					}
 				} catch (IOException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
@@ -235,7 +231,7 @@ public class SavePanel extends JPanel{
 				if( gui.ft.lastClicked == null )
 					return;
 				String path = gui.savePath;
-				int count = gui.ft.lastClicked.getPath().length;
+//				int count = gui.ft.lastClicked.getPath().length; // unused
 				File f = new File(path+"/hksm-back");
 				if( !f.exists() )
 					f.mkdir();
@@ -259,7 +255,6 @@ public class SavePanel extends JPanel{
 						Files.copy(src, cop, StandardCopyOption.REPLACE_EXISTING);
 					}
 				} catch (IOException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
@@ -284,7 +279,6 @@ public class SavePanel extends JPanel{
 							Files.copy(src, cop, StandardCopyOption.REPLACE_EXISTING);
 						}
 					} catch (IOException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 
@@ -294,7 +288,9 @@ public class SavePanel extends JPanel{
 			}
 		});
 		
-		SaveLoader sl = new SaveLoader();
+		// all contained methods are static, uses default constructor
+		// can be removed
+//		SaveLoader sl = new SaveLoader();
 		JsonObject jsondata;
 		
 		IconFontSwing.register(FontAwesome.getIconFont());
@@ -317,15 +313,16 @@ public class SavePanel extends JPanel{
 			System.out.println( f.toString() );
 			if( f.exists() ){
 				System.out.println("FILE EXISTS");
-				jsondata = sl.loadSave(f);
-				completion.setText(sl.getCompletion(jsondata));
-				hpLabel.setText(sl.getHealthAndSoul(jsondata));
-				regionLabel.setText(sl.getLocation(jsondata));
-				geoLabel.setText(sl.getGeo(jsondata));
-				permaLabel.setText(sl.getPerma(jsondata));
+				// non-static access to static methods
+				// each can be changed to SaveLoader.method(arg)
+				jsondata = SaveLoader.loadSave(f);
+				completion.setText(SaveLoader.getCompletion(jsondata));
+				hpLabel.setText(SaveLoader.getHealthAndSoul(jsondata));
+				regionLabel.setText(SaveLoader.getLocation(jsondata));
+				geoLabel.setText(SaveLoader.getGeo(jsondata));
+				permaLabel.setText(SaveLoader.getPerma(jsondata));
 			}
 		} catch (Exception e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		
