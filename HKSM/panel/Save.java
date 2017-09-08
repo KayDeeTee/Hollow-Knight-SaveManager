@@ -13,8 +13,8 @@ import javax.swing.SwingConstants;
 
 import com.google.gson.JsonObject;
 
-import HKSM.GUI;
-import HKSM.SaveLoader;
+import HKSM.app.GUI;
+import HKSM.data.SaveLoader;
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 

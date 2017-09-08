@@ -19,7 +19,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
-import HKSM.GUI;
+import HKSM.app.GUI;
 
 /**
  * SavePanel and LoadDeletePanel Listeners, migrated from their original location in SavePanel.java
