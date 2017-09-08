@@ -21,11 +21,7 @@ import jiconfont.swing.IconFontSwing;
 /**
  * SavePanel contains the 4 loaded player saves and the buttons to interact with them.
  * 
-<<<<<<< HEAD
  * @author Kristian Thorpe <sfgmugen@gmail.com>
-=======
- * @author KDT
->>>>>>> origin/master
  * @cleanup J Conrad
  */
 @SuppressWarnings("serial")

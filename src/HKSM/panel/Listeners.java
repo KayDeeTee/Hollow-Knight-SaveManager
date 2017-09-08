@@ -24,11 +24,7 @@ import HKSM.GUI;
 /**
  * SavePanel and LoadDeletePanel Listeners, migrated from their original location in SavePanel.java
  * 
-<<<<<<< HEAD
  * @author Kristian Thorpe <sfgmugen@gmail.com>
-=======
- * @author Ian Darwin
->>>>>>> origin/master
  * @migratedBy J Conrad
  *
  */
@@ -36,11 +32,7 @@ public class Listeners {
 	
 	/**
 	 * 
-<<<<<<< HEAD
 	 * @author Kristian Thorpe <sfgmugen@gmail.com>
-=======
-	 * @author Ian Darwin
->>>>>>> origin/master
 	 *
 	 */
 	public static class LoadAll implements ActionListener{
@@ -97,11 +89,7 @@ public class Listeners {
 	
 	/**
 	 * 
-<<<<<<< HEAD
 	 * @author Kristian Thorpe <sfgmugen@gmail.com>
-=======
-	 * @author Ian Darwin
->>>>>>> origin/master
 	 *
 	 */
 	public static class Delete implements ActionListener{
@@ -156,11 +144,7 @@ public class Listeners {
 	
 	/**
 	 * 
-<<<<<<< HEAD
 	 * @author Kristian Thorpe <sfgmugen@gmail.com>
-=======
-	 * @author Ian Darwin
->>>>>>> origin/master
 	 *
 	 */
 	public static class Load implements ActionListener{
@@ -217,11 +201,7 @@ public class Listeners {
 	
 	/**
 	 * 
-<<<<<<< HEAD
 	 * @author Kristian Thorpe <sfgmugen@gmail.com>
-=======
-	 * @author Ian Darwin
->>>>>>> origin/master
 	 *
 	 */
 	public static class Save implements ActionListener{
@@ -271,11 +251,7 @@ public class Listeners {
 	
 	/**
 	 * 
-<<<<<<< HEAD
 	 * @author Kristian Thorpe <sfgmugen@gmail.com>
-=======
-	 * @author Ian Darwin
->>>>>>> origin/master
 	 *
 	 */
 	public static class SaveAs implements ActionListener{

@@ -15,11 +15,7 @@ import com.google.gson.JsonObject;
 
 /**
  * 
-<<<<<<< HEAD
  * @author Kristian Thorpe <sfgmugen@gmail.com>
-=======
- * @author Ian Darwin
->>>>>>> origin/master
  *
  */
 @SuppressWarnings("serial")

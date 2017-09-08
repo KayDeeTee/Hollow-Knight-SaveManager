@@ -23,8 +23,8 @@ import gnu.crypto.pad.PadFactory;
  * 
  * 
  * @author Kristian Thorpe <sfgmugen@gmail.com>
-=======
-
+ *
+ */
 public class SaveLoader {
 	
 	public static byte[] cSharpHeader = {
@@ -273,13 +273,8 @@ public class SaveLoader {
 	
 	/**
 	 * 
-<<<<<<< HEAD
 	 * @param input The length of the encrypted + encoded json string in bytes
 	 * @return output c# variable length encoded int
-=======
-	 * @param input
-	 * @return
->>>>>>> origin/master
 	 */
 	private static byte[] getLength(byte[] input){
 		String rawLengthBinary =  Integer.toBinaryString(input.length);
