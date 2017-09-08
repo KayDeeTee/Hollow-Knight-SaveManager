@@ -13,8 +13,15 @@ import javax.swing.event.DocumentListener;
 
 import com.google.gson.JsonObject;
 
+/**
+ * 
+ * @author Kristian Thorpe <sfgmugen@gmail.com>
+ *
+ */
+@SuppressWarnings("serial")
 public class SaveField extends JPanel {
 
+	/** */
 	public enum DataType{
 		INTEGER,
 		STRING,
@@ -25,6 +32,11 @@ public class SaveField extends JPanel {
 	public String title;
 	public JsonObject json;
 	
+	/**
+	 * Adds accurate nail art and dash flags to the save's playerData
+	 * 
+	 * @param json the save file to be modified
+	 */
 	public static void validateSaveData(JsonObject json){
 		JsonObject playerData = json.getAsJsonObject("playerData");
 		
@@ -40,10 +52,11 @@ public class SaveField extends JPanel {
 		
 		//SKILL VERIFY
 		playerData.addProperty("canDash", playerData.get("hasDash").getAsBoolean());
-		
-		
 	}
 	
+	/**
+	 * 
+	 */
 	public void initIntegerField(){
 		int data = json.getAsJsonObject(jpath[0]).get(jpath[1]).getAsInt();
 		//System.out.println(data);
@@ -66,10 +79,16 @@ public class SaveField extends JPanel {
 		});
 	}
 	
+	/**
+	 * 
+	 */
 	public void initStringField(){
 		this.add(new JTextField("STR"), BorderLayout.CENTER);
 	}
 	
+	/**
+	 * 
+	 */
 	public void initBoolField(){
 		boolean data = json.getAsJsonObject(jpath[0]).get(jpath[1]).getAsBoolean();
 		JButton button = new JButton(data ? "owned" : "unowned");
@@ -88,6 +107,14 @@ public class SaveField extends JPanel {
 		this.add(button, BorderLayout.CENTER);
 	}
 	
+	/**
+	 * 
+	 * 
+	 * @param jObject
+	 * @param jsonpath
+	 * @param name
+	 * @param dt
+	 */
 	public SaveField(JsonObject jObject, String[] jsonpath, String name, DataType dt){
 		this.jpath = jsonpath;
 		this.title = name;

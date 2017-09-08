@@ -13,6 +13,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import HKSM.panel.LoadDelete;
+import HKSM.panel.Save;
+
 public class GUI {
 	
 	public String savePath;
@@ -23,11 +26,11 @@ public class GUI {
 	
 	private JFrame frame;
 	
-	private SavePanel[] loadedSaves;
+	private JPanel[] loadedSaves;
 	private JPanel saveContainer;
 	private JPanel directoryExplorer;
 	
-	final JFileChooser fc = new JFileChooser();
+	public static final JFileChooser fc = new JFileChooser();
 	
 	public FileTree ft;
 	
@@ -63,13 +66,18 @@ public class GUI {
 		return ret;		
 	};
 	
-	private SavePanel[] createSavePanels(int count){
-		SavePanel[] ret = new SavePanel[count];
+	/**
+	 * Creates the left-hand panels of the GUI.
+	 * 
+	 * @return the number of panels requested (5) with the last being a LoadAll / Delete panel
+	 */
+	private JPanel[] createPanels(int count){
+		JPanel[] ret = new JPanel[count];
 		for( int i = 0; i < count-1; i++){
-			ret[i] = new SavePanel(this, "user" + Integer.toString(i+1) + ".dat");
+			ret[i] = new Save(this, "user" + Integer.toString(i+1) + ".dat");
 		}
-		ret[count-1] = new SavePanel(this, false);
-		ret[count-1].filename.setText("selected.dat");
+		ret[count-1] = new LoadDelete(this);
+		((LoadDelete) ret[count-1]).filename.setText("selected.dat");
 		return ret;
 	}
 	
@@ -84,7 +92,6 @@ public class GUI {
 			props.store(out, "---Test Comment---");
 			out.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -102,23 +109,22 @@ public class GUI {
 		
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.BOTH;
-		c.weightx = 1;c.weighty = 1;
+		c.weightx = 1;
+		c.weighty = 1;
 		c.gridwidth = 1;
 		c.gridx = 0;
 		c.gridy = 0;
 		
-		loadedSaves = createSavePanels(5);
+		// creates 4 user.dat panels and an additional panel
+		loadedSaves = createPanels(5);
 		saveContainer = new JPanel(new GridBagLayout());
+		
+		// Changes GridBagConstraints, then adds each of the loadedSaves
 		for( int i = 0; i < loadedSaves.length; i++ ){
-			c.weightx = 1;c.weighty = 1;
-			c.gridwidth = 1;
-			c.gridx = 0;
 			c.gridy = i;
 			saveContainer.add(loadedSaves[i], c);
 		}
-		c.weightx = 1;c.weighty = 1;
-		c.gridwidth = 1;
-		c.gridx = 0;
+		
 		c.gridy = 0;
 		directoryExplorer = new JPanel();
 		directoryExplorer.setLayout(new GridBagLayout());
@@ -153,8 +159,6 @@ public class GUI {
 		            saveProperties("appProperties");
 		            
 		            refreshFileTree(savePath);
-
-		        } else {
 		        }
 			}
 		});
@@ -166,16 +170,15 @@ public class GUI {
 				saveProperties("appProperties");
 				
 				backupToggle.setText(backup ?  "Backup: ON " : "Backup: OFF");
-				
 			}
 		});
 		
 		addDirectory.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				if( ft.lastClicked == null )
-					return;
+					{ return; }
 				if( dirOrSaveName.getText().isEmpty())
-					return;
+					{ return; }
 				String path = savePath;
 				int count = ft.lastClicked.getPath().length;
 					
@@ -197,18 +200,16 @@ public class GUI {
 				ft.model.reload();
 				new File(path+"/"+name).mkdir();
 				
-				System.out.println(path + "" + name);	
-				
-				
+				System.out.println(path + "" + name);
 			}
 		});
 		
 		addSavefile.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				if( ft.lastClicked == null )
-					return;
+					{ return; }
 				if( dirOrSaveName.getText().isEmpty())
-					return;
+					{ return; }
 				String path = savePath;
 				int count = ft.lastClicked.getPath().length;
 					
@@ -236,8 +237,8 @@ public class GUI {
 		
 		directoryButtons.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.weightx = 1;gbc.weighty=1;
-		gbc.gridx = 0;gbc.gridy=0;
+		gbc.weightx = 1; gbc.weighty=1;
+		gbc.gridx = 0; gbc.gridy=0;
 		directoryButtons.add(backupToggle, gbc);
 		gbc.gridx = 1;
 		directoryButtons.add(setSaveLocation, gbc);
@@ -250,18 +251,11 @@ public class GUI {
 		
 		directoryExplorer.add(directoryButtons, c);
 		
-		//c.gridy = 0;
-		//c.ipadx = 500;
-		frame.add(saveContainer, BorderLayout.LINE_START);		
-		//c.ipadx = 200;
-		//c.weightx = 1;c.weighty = 1;
-		//c.gridx = 1;
-		//c.gridy = 0;
+		frame.add(saveContainer, BorderLayout.LINE_START);
 		frame.add(directoryExplorer, BorderLayout.CENTER);
 		
 		frame.pack();
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
-		
 	}
 }

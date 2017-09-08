@@ -1,31 +1,21 @@
 package HKSM;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.io.FileFilter;
-import java.io.FilenameFilter;
-import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Vector;
 
-import javax.swing.BoxLayout;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
 
 /**
  * Display a file system in a JTree view
@@ -41,7 +31,7 @@ public class FileTree extends JPanel {
 	public DefaultMutableTreeNode lastClicked;
 	public DefaultTreeModel model;
 	
-  /** Construct a FileTree */
+  /** Construct a FileTree from the given File */
   public FileTree(File dir) {
     setLayout(new BorderLayout());
 
@@ -51,12 +41,12 @@ public class FileTree extends JPanel {
     // Add a listener
     
     tree.addMouseListener(new MouseAdapter() {
-        public void mouseClicked(MouseEvent e) {
+		public void mouseClicked(MouseEvent e) {
             if (e.getClickCount() == 2) {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode)
                        tree.getLastSelectedPathComponent();
                 if (node == null) return;
-                Object nodeInfo = node.getUserObject();
+//                Object nodeInfo = node.getUserObject(); // unused
                 // Cast nodeInfo to your object and do whatever you want
                 System.out.println("You double clicked " + node);
                 
@@ -66,6 +56,8 @@ public class FileTree extends JPanel {
 					path += "/" + gui.ft.lastClicked.getPath()[i].toString();
 				}
                 
+				// This 
+				@SuppressWarnings("unused")
                 JFrame SaveEditor = new SaveEditor(path, node.toString());
             }
         }
@@ -94,7 +86,7 @@ public class FileTree extends JPanel {
     if (curTop != null) { // should only be null at root
       curTop.add(curDir);
     }
-    Vector ol = new Vector();
+    Vector<String> ol = new Vector<String>();
     //String[] tmp = dir.list();
     File[] tmp = dir.listFiles();
     for (int i = 0; i < tmp.length; i++){
@@ -102,7 +94,7 @@ public class FileTree extends JPanel {
     }
     Collections.sort(ol, String.CASE_INSENSITIVE_ORDER);
     File f;
-    Vector files = new Vector();
+    Vector<String> files = new Vector<String>();
     // Make two passes, one for Dirs and one for Files. This is #1.
     for (int i = 0; i < ol.size(); i++) {
       String thisObject = (String) ol.elementAt(i);

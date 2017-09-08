@@ -2,29 +2,29 @@ package HKSM;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.crypto.Cipher;
-import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import com.google.gson.*;
 
-import gnu.crypto.cipher.IBlockCipher;
 import gnu.crypto.mode.IMode;
 import gnu.crypto.mode.ModeFactory;
 import gnu.crypto.pad.IPad;
 import gnu.crypto.pad.PadFactory;
 
+/**
+ * 
+ * 
+ * @author Kristian Thorpe <sfgmugen@gmail.com>
+ *
+ */
 public class SaveLoader {
 	
 	public static byte[] cSharpHeader = {
@@ -52,6 +52,7 @@ public class SaveLoader {
 			00
 	};
 	
+	/** */
 	public enum MapZone
 	{
 		// Token: 0x04002E53 RID: 11859
@@ -155,8 +156,13 @@ public class SaveLoader {
 		// Token: 0x04002E84 RID: 11908
 		BEASTS_DEN
 	}
-	
-	public static byte[] encGNU(String input) throws Exception {
+	/**
+	 * Encrypts a string via Rijndael/ECB/RKCS7 with the key UKu52ePUBwetZ9wNX88o54dnfKRu0T1l then encodes in base 64
+	 * This uses GNU libraries to bypass the JCE requirement
+	 * 
+	 * @param input the string representing the json, to be encrypted
+	 */
+	public static byte[] encrypt(String input) throws Exception {
 		byte[] message = input.getBytes("UTF-8");
 		
 		IMode mode = ModeFactory.getInstance("ECB", "Rijndael", 16);
@@ -186,8 +192,13 @@ public class SaveLoader {
 	     
 		return Base64.getMimeEncoder().encode(ct);
 	}
-	
-	public static byte[] decGNU(String input) throws Exception {
+	/**
+	 * Base 64 Decodes a string then decrypts it via Rijndael/ECB/RKCS7 with the key UKu52ePUBwetZ9wNX88o54dnfKRu0T1l 
+	 * This uses GNU libraries to bypass the JCE requirement
+	 * 
+	 * @param input the encrypted string representing the json, to be decrypted
+	 */
+	public static byte[] decrypt(String input) throws Exception {
 		byte[] message = input.getBytes();
 	    byte[] tmp = Arrays.copyOfRange(message, 0, message.length-1);
 	    String str = new String(tmp);
@@ -226,40 +237,6 @@ public class SaveLoader {
 		return output;
 	}
 	
-	
-	public static byte[] encrypt(String input) throws Exception {
-		
-	    byte[] message = input.getBytes("UTF-8");
-	    
-	    SecretKeySpec sKey = new SecretKeySpec("UKu52ePUBwetZ9wNX88o54dnfKRu0T1l".getBytes("UTF-8"), "Rijndael");
-	    final Cipher decipher = Cipher.getInstance("Rijndael/ECB/PKCS5Padding");
-	    decipher.init(Cipher.ENCRYPT_MODE, sKey);
-	    final byte[] enc = decipher.doFinal(message);
-	    
-	    
-	    message = Base64.getMimeEncoder().encode(enc);
-	
-	    return message;
-	}
-	
-	public static String decrypt(String input) throws Exception {
-	
-	    byte[] message = input.getBytes();
-	    
-	    byte[] tmp = Arrays.copyOfRange(message, 0, message.length-1);
-	    
-	    String str = new String(tmp);
-	    
-	    message = Base64.getMimeDecoder().decode(str);
-	    
-	    SecretKeySpec sKey = new SecretKeySpec("UKu52ePUBwetZ9wNX88o54dnfKRu0T1l".getBytes("UTF-8"), "Rijndael");
-	    final Cipher decipher = Cipher.getInstance("Rijndael/ECB/PKCS5Padding");
-	    decipher.init(Cipher.DECRYPT_MODE, sKey);
-	    final byte[] plainText = decipher.doFinal(message);
-	    
-	    return new String(plainText, "UTF-8");
-	}
-	
 	public static String getHealthAndSoul(JsonObject je){
 		int health = 5 + je.getAsJsonObject("playerData").get("heartPieces").getAsInt();
 		int soul = je.getAsJsonObject("playerData").get("MPReserveMax").getAsInt() / 33;
@@ -294,34 +271,44 @@ public class SaveLoader {
 		return ret;
 	}
 	
-	public static byte[] getLength(byte[] input){
+	/**
+	 * 
+	 * @param input The length of the encrypted + encoded json string in bytes
+	 * @return output c# variable length encoded int
+	 */
+	private static byte[] getLength(byte[] input){
 		String rawLengthBinary =  Integer.toBinaryString(input.length);
 		String reverse = new StringBuffer(rawLengthBinary).reverse().toString();
-		//System.out.println(reverse.length());
+		System.out.println(reverse.length());
 		String[] data = new String[(int) Math.ceil( ((double)reverse.length()) / 7.0f)];
-		//System.out.println(data.length);
+		System.out.println(data.length);
 		for( int i = 0; i < data.length-1; i++){
 			data[i] = reverse.subSequence(i*7, ((i+1)*7)).toString()+"1";
 		}
 		data[data.length-1] = reverse.subSequence((data.length-1)*7, reverse.length()).toString();
 		byte[] output = new byte[data.length];
 		for( int i = 0; i < data.length; i++){
-			//System.out.println(data[i]);
+			System.out.println(data[i]);
 			output[i] = (byte) Long.parseLong( new StringBuffer(data[i]).reverse().toString(), 2);
 		}
 		return output;
 	}
 	
+	/**
+	 * Encrypts the given json at the requested file
+	 * 
+	 * @param dir the location to encrypt and save the save (lol)
+	 * @param json the save data to be encrypted and written
+	 */
 	public static void saveSave(File dir, JsonObject json){
 		SaveField.validateSaveData(json);
 		SaveEditor.validateCharms(json.getAsJsonObject("playerData"));
 		Gson gson = new GsonBuilder().create();
 		String jsonString = gson.toJson(json);//.replaceAll("\\s","");
 		jsonString = jsonString.substring(0, jsonString.length()-2)+"}}";
-		//System.out.println(jsonString);
+		System.out.println(jsonString);
 		try {
-			//byte[] toSave = encrypt(jsonString);
-			byte[] toSave = encGNU(jsonString);
+			byte[] toSave = encrypt(jsonString);
 			int count = 0;
 			for( int i = 0; i< toSave.length; i++){
 				if(!(toSave[i] == 0x0D || toSave[i] == 0x0A))
@@ -348,17 +335,20 @@ public class SaveLoader {
 			out.write(outArray);
 			out.close();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 	}
 	
+	/**
+	 * 
+	 * @param dir the file to be decrypted into JSON format
+	 * @return the decrypted save data in JSON format
+	 * @throws Exception to capture generic errors
+	 */
 	public static JsonObject loadSave(File dir) throws Exception {
 		String str = new String(Files.readAllBytes(dir.toPath()),"UTF-8");
-		//String json = new String(decrypt(str));
-		String json = new String(decGNU(str), "UTF-8");
-		//System.out.println(json);
+		String json = new String(decrypt(str));
 		JsonObject jElement = new Gson().fromJson(json, JsonObject.class);
 		return jElement;
 	}
