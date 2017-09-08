@@ -18,7 +18,11 @@ import javax.swing.SwingConstants;
  * The launcher for HKSM. Main deals with platform- and version-dependent properties
  * of the application, and directs users to download JCE if necessary.
  * 
+<<<<<<< HEAD
  * @author Kristian Thorpe <sfgmugen@gmail.com>
+=======
+ * @author Ian Darwin
+>>>>>>> origin/master
  *
  */
 public class Main {
@@ -61,6 +65,52 @@ public class Main {
 		Security.setProperty("crypto.policy", "unlimited");
 		Properties appProps = loadProperties("appProperties");
 		
+<<<<<<< HEAD
+=======
+		System.out.println(Cipher.getMaxAllowedKeyLength( "Rijndael" ));
+		String sec = System.getProperty("java.home")+"/lib/security/";
+
+		if( Cipher.getMaxAllowedKeyLength( "Rijndael" ) < 2147483647){
+			JFrame fJava = new JFrame("Encryption Limits");
+			String text = "";
+			
+			/* Inform end-user of JCE requirements and provide version-specific URI */
+			double v = getVersion();
+			if( v < 1.7 ){
+				text = "Update your java to version 1.7 or above.";
+			} else {
+				if( v == 1.7 ){
+					if(Desktop.isDesktopSupported())
+					{
+						text = "<html><div style='text-align: center;'>Install the files from the loaded webpage by<br> Accepting the License Agreement<br>Downloading and unzipping the Files<br>Copying local_policy.jar and US_export_policy.jar into lib/security folder that should have opened<br>then reload to fix Save Editing<br></div></html>";
+						Desktop.getDesktop().browse(new URI("http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html"));
+						Desktop.getDesktop().open(new File(sec));
+					}
+				}
+				if( v == 1.8 ){
+					if(Desktop.isDesktopSupported())
+					{
+						text = "<html><div style='text-align: center;'>Install the files from the loaded webpage by<br> Accepting the License Agreement<br>Downloading and unzipping the Files<br>Copying local_policy.jar and US_export_policy.jar into lib/security folder that should have opened<br>then reload to fix Save Editing<br></div></html>";
+						Desktop.getDesktop().browse(new URI("http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html"));
+						Desktop.getDesktop().open(new File(sec));
+					}
+				}
+				if( v == 1.9 ){
+					text = "There should be no problems with the Save Editor, message @KDT on the discord";
+				}
+			}
+			JLabel msg = new JLabel(text);
+			
+			msg.setHorizontalAlignment(SwingConstants.CENTER);
+			
+			fJava.add(msg, SwingConstants.CENTER);
+			fJava.setLocationRelativeTo(null);
+			fJava.setAlwaysOnTop (true);
+			fJava.pack();
+			fJava.setVisible(true);
+		}
+		
+>>>>>>> origin/master
 		@SuppressWarnings("unused")
 		GUI gui = new GUI(appProps);
 	}

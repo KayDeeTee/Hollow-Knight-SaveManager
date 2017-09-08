@@ -8,7 +8,11 @@ import javax.swing.JTextField;
 /**
  * A simple wrapper for a JTextField which only accepts numerical input.
  * 
+<<<<<<< HEAD
  * @author Kristian Thorpe <sfgmugen@gmail.com>
+=======
+ * @author Ian Darwin
+>>>>>>> origin/master
  *
  */
 @SuppressWarnings("serial")

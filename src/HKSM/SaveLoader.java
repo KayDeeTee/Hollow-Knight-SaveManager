@@ -14,6 +14,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import com.google.gson.*;
 
+<<<<<<< HEAD
 import gnu.crypto.mode.IMode;
 import gnu.crypto.mode.ModeFactory;
 import gnu.crypto.pad.IPad;
@@ -23,6 +24,12 @@ import gnu.crypto.pad.PadFactory;
  * 
  * 
  * @author Kristian Thorpe <sfgmugen@gmail.com>
+=======
+/**
+ * 
+ * 
+ * @author Ian Darwin
+>>>>>>> origin/master
  *
  */
 public class SaveLoader {
@@ -273,8 +280,13 @@ public class SaveLoader {
 	
 	/**
 	 * 
+<<<<<<< HEAD
 	 * @param input The length of the encrypted + encoded json string in bytes
 	 * @return output c# variable length encoded int
+=======
+	 * @param input
+	 * @return
+>>>>>>> origin/master
 	 */
 	private static byte[] getLength(byte[] input){
 		String rawLengthBinary =  Integer.toBinaryString(input.length);
