@@ -152,7 +152,7 @@ public class SaveLoader {
 	 * 
 	 * @param input the string representing the json, to be encrypted
 	 */
-	public static byte[] encrypt(String input) throws Exception {
+	private static byte[] encrypt(String input) throws Exception {
 		byte[] message = input.getBytes();
 		byte[] ct = crypt(message, IMode.ENCRYPTION);
 		return Base64.getMimeEncoder().encode(ct);
@@ -163,7 +163,7 @@ public class SaveLoader {
 	 * 
 	 * @param input the encrypted string representing the json, to be decrypted
 	 */
-	public static byte[] decrypt(String input) throws Exception {
+	private static byte[] decrypt(String input) throws Exception {
 		byte[] message = input.getBytes();
 	    byte[] tmp = Arrays.copyOfRange(message, 0, message.length-1);
 	    String str = new String(tmp);
@@ -237,7 +237,7 @@ public class SaveLoader {
 	 */
 	public static void saveSave(File dir, JsonObject json){
 		validateSaveData(json);
-		validateCharms(json.getAsJsonObject("playerData"));
+		validateCharms(json);
 		Gson gson = new GsonBuilder().create();
 		String jsonString = gson.toJson(json);//.replaceAll("\\s","");
 		jsonString = jsonString.substring(0, jsonString.length()-2)+"}}";
@@ -312,12 +312,14 @@ public class SaveLoader {
 	}
 
 
-	public static void validateCharms(JsonObject playerData){
+	public static void validateCharms(JsonObject json){
+		JsonObject playerData = json.getAsJsonObject("playerData");
+		
 		JsonArray charms = new JsonArray();
 		for( int i = 1; i <= 36; i++){
 			if( playerData.get("equippedCharm_"+Integer.toString(i)).getAsBoolean() )
-				charms.add(i);
+				charms.add( new JsonPrimitive(i) );
 		}
-		playerData.add("equppedCharms", charms);
+		playerData.add("equippedCharms", charms);
 	}
 }

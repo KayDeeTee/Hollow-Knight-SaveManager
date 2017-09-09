@@ -3,9 +3,12 @@ package HKSM.app.editor;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 
 import javax.swing.AbstractButton;
 import javax.swing.Box;
@@ -194,41 +197,15 @@ public class SaveEditor extends JFrame {
 		
 		JPanel charmBottom = new JPanel();
 		charmBottom.setLayout(new GridLayout(0,2));
-		
+		List<CharmPanel> charmList = new ArrayList<CharmPanel>();
 		for( int i = 0; i < 36; i++){
-			JPanel charm = new JPanel();
-			charm.setLayout(new BorderLayout());
-			charm.add(new JLabel( charmNames[i] ), BorderLayout.PAGE_START);
-			JPanel info = new JPanel();
-			info.setLayout(new GridLayout(2,3));
-			info.add(new JLabel("owned"));
-			info.add(new JLabel("equipped"));
-			info.add(new JLabel("cost"));
-						
-			String s = Integer.toString(i+1);
-			
-			boolean ow = playerData.get("gotCharm_" + s).getAsBoolean();
-			boolean eq = playerData.get("equippedCharm_" + s).getAsBoolean();
-			int co = playerData.get("charmCost_" + s).getAsInt();
-			
-			JButton owned = new JButton(ow ? "OWN" : "UNOWNED");
-			JButton equip = new JButton(eq ? "ON" : "OFF");
-			IntField cost = new IntField(co);
-			
-			// Now uses boxed listeners
-			owned.addActionListener(new BoolButtonListener(owned, playerData, "gotCharm_" + s, "OWN", "UNOWNED"));
-			equip.addActionListener(new BoolButtonListener(equip, playerData, "equippedCharm_" + s, "ON", "OFF"));
-			cost.getDocument().addDocumentListener(new DocChecker(playerData, "charmCost_" + s, cost));
-			
-			info.add(owned);
-			info.add(equip);
-			info.add(cost);
-			
-			charm.add(info, BorderLayout.CENTER);
-			charm.add(Box.createRigidArea(new Dimension(0,15)), BorderLayout.PAGE_END);
-			charmBottom.add(charm);
+			CharmPanel charm = new CharmPanel(i, charmNames[i], playerData);
+			charmList.add(charm);
 		}
-		
+		Collections.sort(charmList);
+		for( int i = 0; i < 36; i++){
+			charmBottom.add(charmList.get(i));
+		}
 		charmTab.add(charmTop, BorderLayout.PAGE_START);
 		charmTab.add(charmBottom, BorderLayout.CENTER);
 		JScrollPane charmEditor = new JScrollPane(charmTab);

@@ -6,6 +6,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -72,6 +73,74 @@ public class Listeners {
 			target.setText(!bool ? ifTrue : ifFalse);
 		}
 	}
+	
+	
+	
+	/**
+	 * Simple ActionListener class to improve code readability. All actions
+	 * trigger the member's boolean value to switch.
+	 * 
+	 * @author K Thorpe
+	 *
+	 */
+	public static class BoolCheckboxListener implements ActionListener{
+		
+		JCheckBox target;
+		JsonObject playerData;
+		String memberName;
+		
+		public BoolCheckboxListener(JCheckBox target, JsonObject playerData, String memberName){
+			this.target = target;
+			this.playerData = playerData;
+			this.memberName = memberName;
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			boolean bool = playerData.get(memberName).getAsBoolean();
+			playerData.addProperty(memberName, !bool);
+			target.setSelected(!bool);
+		}
+	}
+	
+	public static class BoolEquipListener implements ActionListener{
+		
+		JCheckBox target;
+		JCheckBox autoCalc;
+		IntField totalNotches;
+		JsonObject playerData;
+		String memberName;
+		
+		public BoolEquipListener(JCheckBox target, JCheckBox autoCalc, IntField totalNotches, IntField value, JsonObject playerData, String memberName){
+			this.target = target;
+			this.autoCalc = autoCalc;
+			this.totalNotches = totalNotches;
+			this.playerData = playerData;
+			this.memberName = memberName;
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			boolean bool = playerData.get(memberName).getAsBoolean();
+			playerData.addProperty(memberName, !bool);
+			target.setSelected(!bool);
+			int tNotches = 0;
+			if(autoCalc.isSelected()){
+				for( int i = 0; i < 36; i++){
+					String s = Integer.toString(i+1);
+					boolean eq = playerData.get("equippedCharm_" + s).getAsBoolean();
+					int co = playerData.get("charmCost_" + s).getAsInt();
+					if( eq )
+						tNotches += co;
+				}
+				playerData.addProperty("charmSlotsFilled", tNotches);
+				totalNotches.setText(Integer.toString(tNotches));
+			}
+			
+		}
+	}
+	
+	
 
 	/**
 	 * Simple DocumentListener class to improve code readability. All 
