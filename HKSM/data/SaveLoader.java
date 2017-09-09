@@ -290,12 +290,27 @@ public class SaveLoader {
 
 
 	/**
-	 * Adds accurate nail art and dash flags to the save's playerData
+	 * Adds accurate nail art, permadeathMode and dash flags to the save's playerData
 	 * 
 	 * @param json the save file to be modified
 	 */
 	private static void validateSaveData(JsonObject json){
 		JsonObject playerData = json.getAsJsonObject("playerData");
+		
+		boolean ss = playerData.get("permadeathMode").getAsBoolean();
+		if( ss )
+			playerData.addProperty("permadeathMode", 1);
+		
+		int fireball = playerData.get("fireballLevel").getAsInt();
+		int scream = playerData.get("screamLevel").getAsInt();
+		int quake = playerData.get("quakeLevel").getAsInt();
+		
+		if( fireball >= 2)
+			playerData.addProperty("fireballLevel", 2);
+		if( scream >= 2)
+			playerData.addProperty("screamLevel", 2);
+		if( quake >= 2)
+			playerData.addProperty("quakeLevel", 2);
 		
 		//NAIL ARTS VERIFY
 		boolean dashSlash = playerData.get("hasDashSlash").getAsBoolean();
@@ -314,6 +329,14 @@ public class SaveLoader {
 
 	public static void validateCharms(JsonObject json){
 		JsonObject playerData = json.getAsJsonObject("playerData");
+		
+		int rcs = playerData.get("royalCharmState").getAsInt();
+		playerData.addProperty("gotCharm_36", rcs > 0);
+		
+		if( (rcs&4) == 4){
+			playerData.addProperty("royalCharmState", 4);
+			playerData.addProperty("equippedCharm_36", true);
+		}
 		
 		JsonArray charms = new JsonArray();
 		for( int i = 1; i <= 36; i++){

@@ -140,6 +140,67 @@ public class Listeners {
 		}
 	}
 	
+	public static class BoolVoidListener implements ActionListener{
+		
+		JCheckBox target;
+		JsonObject playerData;
+		String memberName;
+		int value;
+		
+		public BoolVoidListener(JCheckBox target, JsonObject playerData, String memberName, int value){
+			this.target = target;
+			this.playerData = playerData;
+			this.memberName = memberName;
+			this.value = value;
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			
+			boolean b = target.isSelected();
+			//target.setSelected(b);
+			int v = playerData.get("royalCharmState").getAsInt();
+			
+			if( b ){
+				v += value;
+			} else {
+				v -= value;
+			}
+			
+			playerData.addProperty("royalCharmState", v);
+		}
+	}
+	
+	public static class BoolSpellListener implements ActionListener{
+		
+		JCheckBox target;
+		JsonObject playerData;
+		String memberName;
+		int value;
+		
+		public BoolSpellListener(JCheckBox target, JsonObject playerData, String memberName, int value){
+			this.target = target;
+			this.playerData = playerData;
+			this.memberName = memberName;
+			this.value = value;
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			
+			boolean b = target.isSelected();
+			//target.setSelected(b);
+			int v = playerData.get(memberName).getAsInt();
+			
+			if( b ){
+				v += value;
+			} else {
+				v -= value;
+			}
+			
+			playerData.addProperty(memberName, v);
+		}
+	}
 	
 
 	/**

@@ -4,10 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 
 import javax.swing.Box;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -15,10 +13,14 @@ import javax.swing.JPanel;
 import com.google.gson.JsonObject;
 
 import HKSM.app.editor.Listeners.BoolCheckboxListener;
+import HKSM.app.editor.Listeners.BoolVoidListener;
 import HKSM.app.editor.Listeners.DocChecker;
 import HKSM.app.editor.Listeners.IntField;
 
 @SuppressWarnings("serial")
+/*
+ * @author K Thorpe
+ */
 public class CharmPanel extends JPanel implements Comparable<CharmPanel>  {
 	
 	public int id;
@@ -73,7 +75,38 @@ public class CharmPanel extends JPanel implements Comparable<CharmPanel>  {
 			c.gridx = 3;
 		} else {
 			c.gridx = 2;
-		}		
+		}
+		
+		if( id == 35 ){
+			//Charm is void soul
+			int charmState = playerData.get("royalCharmState").getAsInt();
+			
+			JCheckBox left = new JCheckBox("", (charmState&1)!=0);
+			JCheckBox right = new JCheckBox("", (charmState&2)!=0);
+			JCheckBox voidSoul = new JCheckBox("", (charmState&4)!=0);
+			
+			left.addActionListener(new BoolVoidListener(left, playerData, "royalCharmState", 1));
+			right.addActionListener(new BoolVoidListener(right, playerData, "royalCharmState", 2));
+			voidSoul.addActionListener(new BoolVoidListener(voidSoul, playerData, "royalCharmState", 4));
+			
+			
+			left.setToolTipText("Left Fragment");
+			right.setToolTipText("Right Fragment");
+			voidSoul.setToolTipText("Voided");
+			
+			info.remove(owned);
+			c.gridx = 2;
+			info.add(left, c);
+			c.gridx = 3;
+			info.add(right, c);
+			c.gridx = 4;
+			info.add(voidSoul, c);
+			c.gridx = 5;
+		} else {
+			c.gridx = 2;
+		}	
+		
+		
 		c.weightx=1;
 		info.add(cost, c);
 		

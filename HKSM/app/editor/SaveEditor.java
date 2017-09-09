@@ -85,7 +85,7 @@ public class SaveEditor extends JFrame {
 			"Spell Twister",
 			"Deep Focus",
 			"Grubberfly's Elegy",
-			"SOON TM"
+			"Void Soul"
 	};
 	
 	public SaveEditor(String path, String title){
@@ -137,16 +137,16 @@ public class SaveEditor extends JFrame {
 		inventoryEditor.add(new SaveField(json, new String[]{p, "hasDashSlash"}, "Dash Slash", SaveField.BOOL));
 		inventoryEditor.add(new SaveField(json, new String[]{p, "hasUpwardSlash"}, "Great Slash", SaveField.BOOL));
 		
-		inventoryEditor.add(new SaveField(json, new String[]{p, "fireballLevel"}, "Fireball Lv.", SaveField.INTEGER));
-		inventoryEditor.add(new SaveField(json, new String[]{p, "screamLevel"}, "Scream Lv.", SaveField.INTEGER));
-		inventoryEditor.add(new SaveField(json, new String[]{p, "quakeLevel"}, "Dive Lv.", SaveField.INTEGER));
+		inventoryEditor.add(new SaveField(json, new String[]{p, "fireballLevel"}, "Fireball Lv.", SaveField.SPELL));
+		inventoryEditor.add(new SaveField(json, new String[]{p, "screamLevel"}, "Scream Lv.", SaveField.SPELL));
+		inventoryEditor.add(new SaveField(json, new String[]{p, "quakeLevel"}, "Dive Lv.", SaveField.SPELL));
 		
-		inventoryEditor.add(new SaveField(json, new String[]{p, "hasDash"}, "Mothwing Cloak", SaveField.BOOL));
+		inventoryEditor.add(new SaveField(json, new String[]{p, "hasDash", "hasShadowDash"}, "Mothwing Cloak", SaveField.DASH));
 		inventoryEditor.add(new SaveField(json, new String[]{p, "hasWalljump"}, "Mantis Claw", SaveField.BOOL));
 		inventoryEditor.add(new SaveField(json, new String[]{p, "hasSuperDash"}, "Crystal Dash", SaveField.BOOL));
 		
 		inventoryEditor.add(new SaveField(json, new String[]{p, "hasDoubleJump"}, "Monarch Wings", SaveField.BOOL));
-		inventoryEditor.add(new SaveField(json, new String[]{p, "hasDreamNail"}, "Dreamnail", SaveField.BOOL));
+		inventoryEditor.add(new SaveField(json, new String[]{p, "hasDreamNail", "hasDreamGate", "dreamNailUpgraded"}, "Dreamnail", SaveField.DREAMNAIL));
 		inventoryEditor.add(new SaveField(json, new String[]{p, "hasAcidArmour"}, "Ismas", SaveField.BOOL));
 		
 		//Health	| Mana 		| Nail
