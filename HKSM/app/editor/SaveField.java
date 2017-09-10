@@ -12,14 +12,13 @@ import com.google.gson.JsonObject;
 import HKSM.app.editor.Listeners.BoolCheckboxListener;
 import HKSM.app.editor.Listeners.BoolSpellListener;
 import HKSM.app.editor.Listeners.DocChecker;
-import HKSM.app.editor.Listeners.IntField;
+import HKSM.app.editor.component.IntField;
 
 /**
  * SaveFields are panels which continually report a restricted value to a JsonObject.
  * They may contain integer or string text fields, or boolean button toggles. 
  * 
  * @author Kristian Thorpe <sfgmugen@gmail.com>
- *
  */
 @SuppressWarnings("serial")
 public class SaveField extends JPanel {
@@ -131,7 +130,6 @@ public class SaveField extends JPanel {
 		container.add(rankThr);
 		this.add(container, BorderLayout.LINE_START);
 	}
-	
 	
 	/**
 	 * Create an editable or togglable SaveField restricted to the specs provided 

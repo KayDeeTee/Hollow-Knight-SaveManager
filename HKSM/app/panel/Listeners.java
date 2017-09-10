@@ -1,4 +1,4 @@
-package HKSM.panel;
+package HKSM.app.panel;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
