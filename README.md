@@ -1,4 +1,4 @@
-# Hollow-Knight-SaveManger
+# Hollow-Knight-SaveManager
 Manage and edit Hollow Knight saves
 
 #### Usage:
@@ -7,7 +7,7 @@ Manage and edit Hollow Knight saves
    * \> saves this slot into the selected save
    * floppy disk saves this slot to a new file
    
-Double clicking a save in the file tree opens a save editor if you have jce unlimited strength jurisdiction policy files installed the webpage to download the files, and the folder to install them into should automatically be opened if the savemanager detects they aren't installed
+Double click a save in the file tree to open the save editor. From there you can edit your data in two tabs: Inventory, where your health, soul, geo, and items are contained; and Charms, where you can set whether you have charms, have them equipped, and their notch cost. You can even manually activate overcharmed status.
 
 ## Releases
 
@@ -15,9 +15,10 @@ Double clicking a save in the file tree opens a save editor if you have jce unli
 
 ## Licenses
 
-  * [Hollow-Knight-SaveManger](https://github.com/KayDeeTee/Hollow-Knight-SaveManger/blob/master/LICENSE)
+  * [Hollow-Knight-SaveManager](https://github.com/KayDeeTee/Hollow-Knight-SaveManger/blob/master/LICENSE)
   
-  * #### Dependancies
+  * #### Dependencies
 
     * [jIconFont](https://github.com/jIconFont/jiconfont/blob/master/LICENSE)
     * [gson](https://github.com/google/gson/blob/master/LICENSE)
+	* [gnu-crypto](https://mvnrepository.com/artifact/org.gnu/gnu-crypto/2.0.1)
