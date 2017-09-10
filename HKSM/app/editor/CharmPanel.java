@@ -14,7 +14,6 @@ import com.google.gson.JsonObject;
 
 import HKSM.app.editor.Listeners.BoolCheckboxListener;
 import HKSM.app.editor.Listeners.BoolVoidListener;
-import HKSM.app.editor.Listeners.DocChecker;
 import HKSM.app.editor.Listeners.IntField;
 
 @SuppressWarnings("serial")
@@ -27,7 +26,7 @@ public class CharmPanel extends JPanel implements Comparable<CharmPanel>  {
 	public String name;
 	public JsonObject playerData;
 
-	public CharmPanel(int id, String name, JsonObject playerData){
+	public CharmPanel(int id, String name, JsonObject playerData, JCheckBox autoCalc, JCheckBox overcharmed, IntField eNotch, IntField mNotch){
 		this.id = id;
 		this.name = name;
 		this.playerData = playerData;
@@ -45,24 +44,33 @@ public class CharmPanel extends JPanel implements Comparable<CharmPanel>  {
 		boolean eq = playerData.get("equippedCharm_" + s).getAsBoolean();
 		int co = playerData.get("charmCost_" + s).getAsInt();
 		
-		JCheckBox owned = new JCheckBox("", ow);
-		JCheckBox equip = new JCheckBox("", eq);		
+		JCheckBox got = new JCheckBox("", ow);
+		got.setActionCommand("gotCharm_" + s);
+		got.setToolTipText("Charm owned");
+		
+		JCheckBox equipped = new JCheckBox("", eq);
+		equipped.setActionCommand("equippedCharm_" + s);
+		equipped.setToolTipText("Charm equipped");
+		
 		IntField cost = new IntField(co);
+		cost.setName("charmCost_" + s);
 		
-		owned.setToolTipText("Charm owned");
-		equip.setToolTipText("Charm equipped");
 		
-		// Now uses boxed listeners
-		owned.addActionListener(new BoolCheckboxListener(owned, playerData, "gotCharm_" + s));
-		equip.addActionListener(new BoolCheckboxListener(equip, playerData, "equippedCharm_" + s));
-		cost.getDocument().addDocumentListener(new DocChecker(playerData, "charmCost_" + s, cost));
+		// All listeners have been bundled into a single CharmPanelListener
+		@SuppressWarnings("unused")
+		Listeners.CharmPanelListener TESTL = new Listeners.CharmPanelListener(playerData, got, equipped, cost, autoCalc, overcharmed, eNotch, mNotch);
+		
+//		got.addActionListener(new BoolCheckboxListener(got, playerData, "gotCharm_" + s));
+//		equipped.addActionListener(new BoolCheckboxListener(equipped, playerData, "equippedCharm_" + s));
+//		cost.getDocument().addDocumentListener(new DocChecker(playerData, "charmCost_" + s, cost));
+		
 		
 		c.fill = GridBagConstraints.BOTH;
 		c.gridy=0;c.weighty=0;c.weightx=0;
 		c.gridx = 0;		
-		info.add(owned, c);
+		info.add(got, c);
 		c.gridx = 1;
-		info.add(equip, c);
+		info.add(equipped, c);
 		
 		if( id == 22 || id == 23 || id == 24){
 			//Charm is breakable
@@ -94,7 +102,7 @@ public class CharmPanel extends JPanel implements Comparable<CharmPanel>  {
 			right.setToolTipText("Right Fragment");
 			voidSoul.setToolTipText("Voided");
 			
-			info.remove(owned);
+			info.remove(got);
 			c.gridx = 2;
 			info.add(left, c);
 			c.gridx = 3;
