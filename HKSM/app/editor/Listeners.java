@@ -8,6 +8,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -40,6 +41,14 @@ public class Listeners {
 	    public IntField(int def){
 	    	this.setText(Integer.toString(def));
 	    	this.addKeyListener(new DigitOnlyAdapter());
+	    }
+	    
+	    public int getValue(){
+	    	return getText().length() > 0 ? Integer.parseInt(getText()) : 0;
+	    }
+	    
+	    public boolean greaterThan(IntField n){
+	    	return getValue() > n.getValue();
 	    }
 	}
 	
@@ -75,7 +84,6 @@ public class Listeners {
 	}
 	
 	
-	
 	/**
 	 * Simple ActionListener class to improve code readability. All actions
 	 * trigger the member's boolean value to switch.
@@ -103,42 +111,46 @@ public class Listeners {
 		}
 	}
 	
-	public static class BoolEquipListener implements ActionListener{
-		
-		JCheckBox target;
-		JCheckBox autoCalc;
-		IntField totalNotches;
-		JsonObject playerData;
-		String memberName;
-		
-		public BoolEquipListener(JCheckBox target, JCheckBox autoCalc, IntField totalNotches, IntField value, JsonObject playerData, String memberName){
-			this.target = target;
-			this.autoCalc = autoCalc;
-			this.totalNotches = totalNotches;
-			this.playerData = playerData;
-			this.memberName = memberName;
-		}
-		
-		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			boolean bool = playerData.get(memberName).getAsBoolean();
-			playerData.addProperty(memberName, !bool);
-			target.setSelected(!bool);
-			int tNotches = 0;
-			if(autoCalc.isSelected()){
-				for( int i = 0; i < 36; i++){
-					String s = Integer.toString(i+1);
-					boolean eq = playerData.get("equippedCharm_" + s).getAsBoolean();
-					int co = playerData.get("charmCost_" + s).getAsInt();
-					if( eq )
-						tNotches += co;
-				}
-				playerData.addProperty("charmSlotsFilled", tNotches);
-				totalNotches.setText(Integer.toString(tNotches));
-			}
-			
-		}
-	}
+	/**
+	 * 
+	 *
+	 */
+//	public static class BoolEquipListener implements ActionListener{
+//		
+//		JCheckBox target;
+//		JCheckBox autoCalc;
+//		IntField totalNotches;
+//		JsonObject playerData;
+//		String memberName;
+//		
+//		public BoolEquipListener(JCheckBox target, JCheckBox autoCalc, IntField totalNotches, IntField value, JsonObject playerData, String memberName){
+//			this.target = target;
+//			this.autoCalc = autoCalc;
+//			this.totalNotches = totalNotches;
+//			this.playerData = playerData;
+//			this.memberName = memberName;
+//		}
+//		
+//		@Override
+//		public void actionPerformed(ActionEvent arg0) {
+//			boolean bool = playerData.get(memberName).getAsBoolean();
+//			playerData.addProperty(memberName, !bool);
+//			target.setSelected(!bool);
+//			int tNotches = 0;
+//			if(autoCalc.isSelected()){
+//				for( int i = 0; i < 36; i++){
+//					String s = Integer.toString(i+1);
+//					boolean eq = playerData.get("equippedCharm_" + s).getAsBoolean();
+//					int co = playerData.get("charmCost_" + s).getAsInt();
+//					if( eq )
+//						tNotches += co;
+//				}
+//				playerData.addProperty("charmSlotsFilled", tNotches);
+//				totalNotches.setText(Integer.toString(tNotches));
+//			}
+//			
+//		}
+//	}
 	
 	public static class BoolVoidListener implements ActionListener{
 		
@@ -239,6 +251,125 @@ public class Listeners {
 		
 		public void check(){
 			playerData.addProperty(propertyName, target.getText());
+		}
+	}
+
+	/**
+	 * Because of the relationship between charm data, it makes sense
+	 * to box these listeners as a set. This:<br/><br/>
+	 * 
+	 * -codependently changes gotCharm and equippedCharm
+	 * -tracks changes to the charm's cost
+	 * -determines whether to autocalculate equipped notches and overcharmed status 
+	 * 
+	 * @author J Conrad
+	 *
+	 */
+	public static class CharmPanelListener implements ActionListener, DocumentListener{
+		
+		JsonObject playerData;
+		
+		JCheckBox got;
+		JCheckBox equipped;
+		IntField cost;
+		
+		IntField eNotch;
+		IntField mNotch;
+		
+		JCheckBox autoCalc;
+		JCheckBox overcharmed;
+		private Runnable runAutoCalc;
+		
+		public CharmPanelListener(JsonObject playerData, JCheckBox got, JCheckBox equipped, IntField cost, JCheckBox autoCalc, JCheckBox overcharmed, IntField eNotch, IntField mNotch){
+			this.playerData = playerData;
+			
+			this.got = got;
+			this.equipped = equipped;
+			this.cost = cost;
+			
+			this.eNotch = eNotch;
+			this.mNotch = mNotch;
+			
+			this.autoCalc = autoCalc;
+			this.overcharmed = overcharmed;
+			setRunAutoCalc();
+			
+			got.addActionListener(this);
+			equipped.addActionListener(this);
+			cost.getDocument().addDocumentListener(this);
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent ae){
+			JCheckBox source = (JCheckBox)ae.getSource();
+			String property = ae.getActionCommand();
+			System.out.print(property + ": ");
+			boolean val = source.isSelected();
+			System.out.println(val);
+			playerData.addProperty(property, val);
+			
+			if(source.equals(got)){
+				boolean is = equipped.isSelected() && got.isSelected();
+				equipped.setSelected(is);
+				playerData.addProperty(equipped.getActionCommand(), is);
+			}
+			else{
+				boolean is = equipped.isSelected() || got.isSelected();
+				got.setSelected(is);
+				playerData.addProperty(got.getActionCommand(), is);
+			}
+			if(autoCalc.isSelected()){
+				SwingUtilities.invokeLater(runAutoCalc);
+			}
+		}
+	
+		@Override
+		public void changedUpdate(DocumentEvent arg0) {
+			check();
+			if(autoCalc.isSelected()){
+				SwingUtilities.invokeLater(runAutoCalc);
+			}
+		}
+	
+		@Override
+		public void insertUpdate(DocumentEvent arg0) {
+			check();
+			if(autoCalc.isSelected()){
+				SwingUtilities.invokeLater(runAutoCalc);
+			}
+		}
+	
+		@Override
+		public void removeUpdate(DocumentEvent arg0) {
+			check();
+			if(autoCalc.isSelected()){
+				SwingUtilities.invokeLater(runAutoCalc);
+			}
+		}
+		
+		private void check(){
+			playerData.addProperty(cost.getName(), cost.getText());
+		}
+		
+		private void setRunAutoCalc(){
+			this.runAutoCalc = new Runnable(){
+				@Override
+				public void run() {
+					if(autoCalc.isSelected()){
+						int tNotches = 0;
+						for( int i = 0; i < 36; i++){
+							String s = Integer.toString(i+1);
+							boolean eq = playerData.get("equippedCharm_" + s).getAsBoolean();
+							int co = playerData.get("charmCost_" + s).getAsInt();
+							if( eq )
+								tNotches += co;
+						}
+						playerData.addProperty("charmSlotsFilled", tNotches);
+						eNotch.setText(Integer.toString(tNotches));
+						overcharmed.setSelected(eNotch.greaterThan(mNotch));
+					}
+				}
+			};
 		}
 	}
 	

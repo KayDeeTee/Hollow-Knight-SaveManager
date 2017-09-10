@@ -1,7 +1,6 @@
 package HKSM.app.editor;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.util.List;
 import java.awt.event.ActionEvent;
@@ -11,8 +10,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import javax.swing.AbstractButton;
-import javax.swing.Box;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -22,13 +19,13 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.ToolTipManager;
 
 import com.google.gson.JsonObject;
 
 import HKSM.app.editor.Listeners.IntField;
 import HKSM.data.SaveLoader;
 import HKSM.app.editor.Listeners.DocChecker;
-import HKSM.app.editor.Listeners.BoolButtonListener;
 
 /**
  * 
@@ -89,6 +86,8 @@ public class SaveEditor extends JFrame {
 	};
 	
 	public SaveEditor(String path, String title){
+		ToolTipManager.sharedInstance().setInitialDelay(0);
+		ToolTipManager.sharedInstance().setDismissDelay(20000);
 		String p = "playerData";
 		fObject = new File(path);
 		
@@ -184,22 +183,40 @@ public class SaveEditor extends JFrame {
 		        }
 		 });
 		
-		//playerData.overcharmed
-		
 		JPanel charmTop = new JPanel();
 		charmTop.setLayout(new GridLayout(0,2));
 		charmTop.add( new JLabel("Equipped Notches") );
 		charmTop.add( new JLabel("Max Notches") );
 		charmTop.add( eNotch );
 		charmTop.add( mNotch );
-		charmTop.add( new JCheckBox("Auto-Calculate") );
+		
+		JCheckBox autoCalc = new JCheckBox("Auto-Calculate");
+		autoCalc.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent ae){
+				if(autoCalc.isSelected()){
+					int tNotches = 0;
+					for( int i = 0; i < 36; i++){
+						String s = Integer.toString(i+1);
+						boolean eq = playerData.get("equippedCharm_" + s).getAsBoolean();
+						int co = playerData.get("charmCost_" + s).getAsInt();
+						if( eq )
+							tNotches += co;
+					}
+					playerData.addProperty("charmSlotsFilled", tNotches);
+					eNotch.setText(Integer.toString(tNotches));
+					oc.setSelected(eNotch.greaterThan(mNotch));
+				}
+			}
+		});
+		charmTop.add( autoCalc );
 		charmTop.add( oc );
 		
 		JPanel charmBottom = new JPanel();
 		charmBottom.setLayout(new GridLayout(0,2));
 		List<CharmPanel> charmList = new ArrayList<CharmPanel>();
 		for( int i = 0; i < 36; i++){
-			CharmPanel charm = new CharmPanel(i, charmNames[i], playerData);
+			CharmPanel charm = new CharmPanel(i, charmNames[i], playerData, autoCalc, oc, eNotch, mNotch);
 			charmList.add(charm);
 		}
 		Collections.sort(charmList);

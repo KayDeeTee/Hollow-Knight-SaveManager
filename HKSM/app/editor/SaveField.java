@@ -2,7 +2,6 @@ package HKSM.app.editor;
 
 import java.awt.BorderLayout;
 
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -10,7 +9,6 @@ import javax.swing.JTextField;
 
 import com.google.gson.JsonObject;
 
-import HKSM.app.editor.Listeners.BoolButtonListener;
 import HKSM.app.editor.Listeners.BoolCheckboxListener;
 import HKSM.app.editor.Listeners.BoolSpellListener;
 import HKSM.app.editor.Listeners.DocChecker;
