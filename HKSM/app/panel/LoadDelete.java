@@ -1,4 +1,4 @@
-package HKSM.panel;
+package HKSM.app.panel;
 
 import java.awt.BorderLayout;
 

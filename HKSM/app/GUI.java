@@ -13,9 +13,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import HKSM.app.panel.LoadDelete;
+import HKSM.app.panel.Save;
 import HKSM.data.FileTree;
-import HKSM.panel.LoadDelete;
-import HKSM.panel.Save;
 
 public class GUI {
 	

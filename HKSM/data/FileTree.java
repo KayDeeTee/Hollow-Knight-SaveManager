@@ -49,8 +49,6 @@ public class FileTree extends JPanel {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode)
                        tree.getLastSelectedPathComponent();
                 if (node == null) return;
-//                Object nodeInfo = node.getUserObject(); // unused
-                // Cast nodeInfo to your object and do whatever you want
                 System.out.println("You double clicked " + node);
                 
                 String path = gui.savePath;
@@ -59,7 +57,6 @@ public class FileTree extends JPanel {
 					path += "/" + gui.ft.lastClicked.getPath()[i].toString();
 				}
                 
-				// This 
 				@SuppressWarnings("unused")
                 JFrame SaveEditor = new SaveEditor(path, node.toString());
             }
@@ -84,13 +81,11 @@ public class FileTree extends JPanel {
   /** Add nodes from under "dir" into curTop. Highly recursive. */
   DefaultMutableTreeNode addNodes(DefaultMutableTreeNode curTop, File dir) {
     String curPath = dir.getPath();
-    //DefaultMutableTreeNode curDir = new DefaultMutableTreeNode(curPath);
     DefaultMutableTreeNode curDir = new DefaultMutableTreeNode(dir.getName());
     if (curTop != null) { // should only be null at root
       curTop.add(curDir);
     }
     Vector<String> ol = new Vector<String>();
-    //String[] tmp = dir.list();
     File[] tmp = dir.listFiles();
     for (int i = 0; i < tmp.length; i++){
     	ol.addElement(tmp[i].getName());
