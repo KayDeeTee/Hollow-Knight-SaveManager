@@ -85,7 +85,11 @@ public class SaveEditor extends JFrame {
 		inventoryEditor.add(new SaveField(json, new String[]{p, "maxHealthBase"}, "HP", SaveField.INTEGER));
 		inventoryEditor.add(new SaveField(json, new String[]{p, "MPReserveMax"}, "MP", SaveField.INTEGER));
 		inventoryEditor.add(new SaveField(json, new String[]{p, "nailDamage"}, "Nail Damage", SaveField.INTEGER));
-		
+
+		inventoryEditor.add(new SaveField(json, new String[]{p, "ore"}, "Pale Ore", SaveField.INTEGER));
+		inventoryEditor.add(new SaveField(json, new String[]{p, "rancidEggs"}, "Rancid Eggs", SaveField.INTEGER));
+		inventoryEditor.add(new SaveField(json, new String[]{p, "simpleKeys"}, "Simple Keys", SaveField.INTEGER));
+
 		inventoryEditor.add(new SaveField(json, new String[]{p, "geo"}, "Geo", SaveField.INTEGER));
 		inventoryEditor.add(new SaveField(json, new String[]{p, "dreamOrbs"}, "Dream Orbs", SaveField.INTEGER));
 		inventoryEditor.add(new SaveField(json, new String[]{p, "permadeathMode"}, "Steel Soul", SaveField.BOOL));

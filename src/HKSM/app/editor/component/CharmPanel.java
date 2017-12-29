@@ -65,12 +65,17 @@ public class CharmPanel extends JPanel implements Comparable<CharmPanel>  {
 			"Spell Twister",
 			"Deep Focus",
 			"Grubberfly's Elegy",
-			"Void Soul"
+			"Void Soul",
+			// The Grimm Troupe DLC
+			"Sprintmaster",
+			"Dreamshield",
+			"Weaversong",
+			"Grimmchild / Carefree Melody"
 	};
 	
 	public static List<CharmPanel> createCharmPanels(JsonObject playerData, Notches notches, JCheckBox autoCalc, JCheckBox overcharmed){
 		List<CharmPanel> out = new ArrayList<CharmPanel>(); 
-		for( int i = 0; i < 36; i++){
+		for( int i = 0; i < 40; i++){
 			CharmPanel charm = new CharmPanel(i, charmNames[i], playerData, notches, autoCalc, overcharmed);
 			out.add(charm);
 		}
@@ -122,23 +127,39 @@ public class CharmPanel extends JPanel implements Comparable<CharmPanel>  {
 		gbc.gridx = 1;
 		info.add(equipped, gbc);
 		
-		
-		//CHARM_NAME_23_BRK   Fragile Heart (Repair)
-		//CHARM_NAME_24_BRK   Fragile Greed (Repair)
-		//CHARM_NAME_25_BRK   Fragile Strength (Repair)
+
 		if( id == 22 || id == 23 || id == 24){
+			String [] unbrNm = new String[]{"Health", "Greed", "Strength"};
+
 			//Charm is breakable
-			boolean br = playerData.get("brokenCharm_" + s).getAsBoolean();
-			JCheckBox broken = new JCheckBox("", br);
-			broken.setToolTipText("Charm broken");
-			broken.addActionListener(new BoolCheckboxListener(broken, playerData, "brokenCharm_" + s));
+			boolean broken = playerData.get("brokenCharm_" + s).getAsBoolean();
+			JCheckBox brokenBox = new JCheckBox("", broken);
+			brokenBox.setToolTipText("Charm broken");
+			brokenBox.addActionListener(new BoolCheckboxListener(brokenBox,
+					playerData,
+					"brokenCharm_" + s));
+			gbc.gridx = 1;
+			info.add(brokenBox, gbc);
 			gbc.gridx = 2;
-			info.add(broken, gbc);
+
+			//Unbreakable Version
+			boolean nonBreakable = playerData.get("fragile" + unbrNm[id-22] + "_unbreakable").getAsBoolean();
+			JCheckBox nonBreakableBox = new JCheckBox("", nonBreakable);
+			nonBreakableBox.setToolTipText("Unbreakable");
+			nonBreakableBox.addActionListener(new BoolCheckboxListener(nonBreakableBox,
+				playerData,
+				"fragile" + unbrNm[id-22] + "_unbreakable"));
+			info.add(nonBreakableBox, gbc);
 			gbc.gridx = 3;
 		} else {
 			gbc.gridx = 2;
 		}
-		
+
+
+		if( id == 39 ){
+			//TODO: add Box for Charm: Grimmchild -> Carefree Melody
+		}
+
 		//CHARM_NAME_36_A White Fragment
 		//CHARM_NAME_36_B Kingsoul
 		//CHARM_NAME_36_C Void Heart
@@ -169,9 +190,9 @@ public class CharmPanel extends JPanel implements Comparable<CharmPanel>  {
 			gbc.gridx = 5;
 		} else {
 			gbc.gridx = 2;
-		}	
-		
-		
+		}
+
+
 		gbc.weightx = 1;
 		info.add(cost, gbc);
 		
