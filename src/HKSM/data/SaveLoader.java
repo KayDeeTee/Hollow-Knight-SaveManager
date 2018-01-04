@@ -339,10 +339,15 @@ public class SaveLoader {
 		}
 		
 		JsonArray charms = new JsonArray();
-		for( int i = 1; i <= 36; i++){
+		boolean hasCharm = playerData.get("hasCharm").getAsBoolean();
+		for( int i = 1; i <= 40; i++){
 			if( playerData.get("equippedCharm_"+Integer.toString(i)).getAsBoolean() )
 				charms.add( new JsonPrimitive(i) );
+			if( playerData.get("gotCharm_"+Integer.toString(i)).getAsBoolean() )
+				hasCharm = true;
+
 		}
 		playerData.add("equippedCharms", charms);
+		playerData.addProperty("hasCharm", hasCharm);
 	}
 }
