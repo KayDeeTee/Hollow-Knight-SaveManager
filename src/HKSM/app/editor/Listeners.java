@@ -135,6 +135,27 @@ public class Listeners {
 			playerData.addProperty("royalCharmState", v);
 		}
 	}
+
+	public static class BoolGrimmListener implements ActionListener{
+		
+		JCheckBox target;
+		JsonObject playerData;
+		String memberName;
+		int value;
+		
+		public BoolGrimmListener(JCheckBox target, JsonObject playerData, String memberName, int value){
+			this.target = target;
+			this.playerData = playerData;
+			this.memberName = memberName;
+			this.value = value;
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			playerData.addProperty("grimmChildLevel", value);
+
+		}
+	}
 	
 	/**
 	 * Because of the relationship between charm data, it makes sense
@@ -270,7 +291,7 @@ public class Listeners {
 		
 		@Override
 		public void changedUpdate(DocumentEvent e) {
-		    check();
+			check();
 		}
 		
 		@Override
@@ -280,7 +301,7 @@ public class Listeners {
 		
 		@Override
 		public void insertUpdate(DocumentEvent e) {
-		    check();
+			check();
 		}
 		
 		public void check(){
