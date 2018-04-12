@@ -13,6 +13,22 @@ Double click a save in the file tree to open the save editor. From there you can
 
   * [Latest](https://github.com/KayDeeTee/Hollow-Knight-SaveManger/releases/latest)
 
+## Screenshots
+
+### Save Manager
+
+![Save Manager](screenshots/save_manager.png?raw=true "Save Manager")
+
+### Save Editor
+
+#### Inventory
+
+![Save Editor Inventory](screenshots/save_editor_inventory.png?raw=true "Save Editor Inventory")
+
+#### Charms
+
+![Save Editor Charms](screenshots/save_editor_charms.png?raw=true "Save Editor Charms")
+
 ## Licenses
 
   * [Hollow-Knight-SaveManager](https://github.com/KayDeeTee/Hollow-Knight-SaveManger/blob/master/LICENSE)
