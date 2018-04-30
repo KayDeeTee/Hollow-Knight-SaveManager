@@ -240,7 +240,10 @@ public class SaveLoader {
 		validateCharms(json);
 		Gson gson = new GsonBuilder().create();
 		String jsonString = gson.toJson(json);//.replaceAll("\\s","");
-		jsonString = jsonString.substring(0, jsonString.length()-2)+"}}";
+		if(json.has("modData"))
+			jsonString = jsonString.substring(0, jsonString.length()-2)+"\"}";
+		else
+			jsonString = jsonString.substring(0, jsonString.length()-2)+"}}";
 		System.out.println(jsonString);
 		try {
 			byte[] toSave = encrypt(jsonString);
