@@ -279,6 +279,35 @@ public class SaveLoader {
 	}
 	
 	/**
+	 * Saves json at the requested file
+	 * 
+	 * @param dir the location to encrypt and save the save (lol)
+	 * @param json the save data to be encrypted and written
+	 */
+	public static void saveSwitchSave(File dir, JsonObject json){
+		validateSaveData(json);
+		validateCharms(json);
+		Gson gson = new GsonBuilder().create();
+		String jsonString = gson.toJson(json);//.replaceAll("\\s","");
+		if(json.has("modData"))
+			jsonString = jsonString.substring(0, jsonString.length()-2)+"\"}";
+		else
+			jsonString = jsonString.substring(0, jsonString.length()-2)+"}}";
+		System.out.println(jsonString);
+		try {
+			FileOutputStream out = new FileOutputStream(dir + ".switch");
+			
+			byte[] outArray = jsonString.getBytes();
+			
+			out.write(outArray);
+			out.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	/**
 	 * 
 	 * @param dir the file to be decrypted into JSON format
 	 * @return the decrypted save data in JSON format
@@ -286,7 +315,12 @@ public class SaveLoader {
 	 */
 	public static JsonObject loadSave(File dir) throws Exception {
 		String str = new String(Files.readAllBytes(dir.toPath()),"UTF-8");
-		String json = new String(decrypt(str)).trim();
+		String json;
+		if( str.charAt(0) == '{' ){
+			json = str.trim();
+		} else {
+			json = new String(decrypt(str)).trim();
+		}
 		JsonObject jElement = new Gson().fromJson(json, JsonObject.class);
 		return jElement;
 	}

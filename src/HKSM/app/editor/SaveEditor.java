@@ -66,13 +66,21 @@ public class SaveEditor extends JFrame {
 		
 		JMenu file = new JMenu("File");
 			JMenuItem fileSave = new JMenuItem("Save");
+			JMenuItem switchSave = new JMenuItem("Save (Switch)");
 			
 		menu.add(file);
 			file.add(fileSave);
+			file.add(switchSave);
 			
 		fileSave.addActionListener( new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				SaveLoader.saveSave(fObject, json);
+			}
+		});
+		
+		switchSave.addActionListener( new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				SaveLoader.saveSwitchSave(fObject, json);
 			}
 		});
 		
