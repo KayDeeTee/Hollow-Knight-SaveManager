@@ -1,5 +1,5 @@
 # Hollow-Knight-SaveManager
-Manage and edit Hollow Knight saves
+Manage and edit Hollow Knight saves for all current releases, Windows/Linux/Mac/Switch.
 
 #### Usage:
  On the left of the main window there is the 4 currently loaded saves, each save has 3 buttons
